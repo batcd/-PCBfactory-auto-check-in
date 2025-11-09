@@ -1363,7 +1363,7 @@ def main():
             if jlc_token:
                 log(f" ├── X-JLC-AccessToken: {jlc_token}")
             else:
-                log(" ├── X-JLC-AccessToken: 未获取")
+                log("  ├── X-JLC-AccessToken: 未获取")
             # 显示礼包领取结果
             for reward_result in result['reward_results']:
                 log(f"  ├── {reward_result}")
