@@ -57,7 +57,7 @@ def extract_token_from_local_storage(driver):
     try:
         token = driver.execute_script("return window.localStorage.getItem('X-JLC-AccessToken');")
         if token:
-            log(f"✅ 成功从 localStorage 提取 token: {token[:30]}...")
+            log(f"✅ 成功从 localStorage 提取 token: {token[:37]}...")
             return token
         else:
             alternative_keys = [
@@ -69,7 +69,7 @@ def extract_token_from_local_storage(driver):
             for key in alternative_keys:
                 token = driver.execute_script(f"return window.localStorage.getItem('{key}');")
                 if token:
-                    log(f"✅ 从 localStorage 的 {key} 提取到 token: {token[:30]}...")
+                    log(f"✅ 从 localStorage 的 {key} 提取到 token: {token[:37]}...")
                     return token
     except Exception as e:
         log(f"❌ 从 localStorage 提取 token 失败: {e}")
