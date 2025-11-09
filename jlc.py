@@ -930,7 +930,7 @@ def sign_in_account(username, password, account_index, total_accounts, retry_cou
         
         result['token_extracted'] = bool(access_token)
         result['secretkey_extracted'] = bool(secretkey)
-        
+        result['jlc_access_token'] = access_token  # ← 新增这行
         if access_token and secretkey:
             log(f"账号 {account_index} - ✅ 成功提取 token 和 secretkey")
             
@@ -1347,7 +1347,6 @@ def main():
                 log(f"  ├── 积分状态: 无法获取积分信息")
             
             log(f"  ├── 金豆签到: {result['jindou_status']}")
-            log(f"  ├── 账号TOKEN: {token[:37]}")
             # 显示金豆变化
             if result['jindou_reward'] > 0:
                 jindou_text = f"  ├── 金豆变化: {result['initial_jindou']} → {result['final_jindou']} (+{result['jindou_reward']})"
@@ -1359,7 +1358,12 @@ def main():
                 log(f"  ├── 金豆变化: {result['initial_jindou']} → {result['final_jindou']} (0)")
             else:
                 log(f"  ├── 金豆状态: 无法获取金豆信息")
-            
+            # 显示 JLC AccessToken（新增）
+            jlc_token = result.get('jlc_access_token', '')
+            if jlc_token:
+                log(f" ├── X-JLC-AccessToken: {jlc_token}")
+            else:
+                log(" ├── X-JLC-AccessToken: 未获取")
             # 显示礼包领取结果
             for reward_result in result['reward_results']:
                 log(f"  ├── {reward_result}")
