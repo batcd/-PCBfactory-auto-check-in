@@ -1169,7 +1169,7 @@ def push_summary():
             pass  # 静默失败
 
     # 企业微信 (WeChat Work)
-    wechat_webhook_key = os.getenv('66e2c1b3-57d5-4d66-b7e4-0f1f1876255c')
+    wechat_webhook_key = os.getenv('wechat_webhook_key')
     if wechat_webhook_key:
         try:
             if wechat_webhook_key.startswith('https://'):
