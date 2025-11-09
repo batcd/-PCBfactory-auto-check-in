@@ -1347,7 +1347,7 @@ def main():
                 log(f"  ├── 积分状态: 无法获取积分信息")
             
             log(f"  ├── 金豆签到: {result['jindou_status']}")
-            
+            log(f"  ├── 账号TOKEN: {token[:37]}")
             # 显示金豆变化
             if result['jindou_reward'] > 0:
                 jindou_text = f"  ├── 金豆变化: {result['initial_jindou']} → {result['final_jindou']} (+{result['jindou_reward']})"
