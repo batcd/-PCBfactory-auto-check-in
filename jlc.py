@@ -17,7 +17,23 @@ from selenium.webdriver.support import expected_conditions as EC
 # 全局变量用于收集总结日志
 in_summary = False
 summary_logs = []
-
+def mask_phone_or_email(text):
+    """对手机号或邮箱进行简单脱敏"""
+    if '@' in text:
+        # 邮箱：user@example.com → u***@example.com
+        parts = text.split('@')
+        if len(parts) == 2 and len(parts[0]) > 1:
+            return parts[0][0] + "***@" + parts[1]
+        else:
+            return "***@" + parts[1] if len(parts) == 2 else "******"
+    elif text.isdigit() and len(text) >= 11:
+        # 手机号：13812345678 → 138****5678
+        return text[:3] + "****" + text[-4:]
+    else:
+        # 其他情况：隐藏中间字符
+        if len(text) <= 2:
+            return "*" * len(text)
+        return text[0] + "***" + text[-1]
 def log(msg):
     full_msg = f"[{datetime.now().strftime('%H:%M:%S')}] {msg}"
     print(full_msg, flush=True)
