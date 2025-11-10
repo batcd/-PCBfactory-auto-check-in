@@ -1348,9 +1348,10 @@ def main():
     log(f"开始处理 {total_accounts} 个账号的签到任务")
     
     # 存储所有账号的结果
-        all_results = []
-    BATCH_SIZE = 3  # ← 每3个账号推送一次，可改为5
+    all_results = []
+    BATCH_SIZE = 3  # 每3个账号推送一次，可改为5
 
+    # 主循环：处理每个账号并分批推送
     for i, (username, password) in enumerate(zip(usernames, passwords), 1):
         log(f"\n🔄 开始处理第 {i}/{total_accounts} 个账号: {mask_phone_or_email(username)}")
         result = sign_in_account(username, password, i, total_accounts)
@@ -1369,24 +1370,29 @@ def main():
             log(f"⏳ 等待 {wait_time} 秒后处理下一个账号...")
             time.sleep(wait_time)
 
-    log("\n🎉 所有账号处理完毕！")
-    
-    for i, (username, password) in enumerate(zip(usernames, passwords), 1):
-        log(f"开始处理第 {i} 个账号")
-        result = process_single_account(username, password, i, total_accounts)
-        all_results.append(result)
-        
-        if i < total_accounts:
-            wait_time = random.randint(3, 5)
-            log(f"等待 {wait_time} 秒后处理下一个账号...")
-            time.sleep(wait_time)
-    
-    # 检查是否有失败的账号，执行最终重试（排除密码错误的）
-    has_failed_accounts = any((not result['oshwhub_success'] or not result['jindou_success']) and not result.get('password_error', False) for result in all_results)
+    # 检查是否有失败的账号（排除密码错误），执行最终重试
+    has_failed_accounts = any(
+        (not result['oshwhub_success'] or not result['jindou_success']) and not result.get('password_error', False)
+        for result in all_results
+    )
     
     if has_failed_accounts:
+        log("\n🔁 对失败账号进行最终重试...")
         all_results = execute_final_retry_for_failed_accounts(all_results, usernames, passwords, total_accounts)
+        # 重试后，可选择再推送一次全部结果（或只推重试部分）
+        # 此处为简洁，不再推送；如需推送，可调用 push_batch_summary([r], ...) 遍历
+
+    # 最终退出判断
+    all_failed_accounts = [
+        result for result in all_results
+        if (not result['oshwhub_success'] or not result['jindou_success']) and not result.get('password_error', False)
+    ]
     
-    
+    if enable_failure_exit and all_failed_accounts:
+        log(f"\n❌ 启用失败退出，共 {len(all_failed_accounts)} 个账号签到失败，程序退出码为 1")
+        sys.exit(1)
+    else:
+        log("\n🎉 所有账号处理完毕！")
+        sys.exit(0) 
 if __name__ == "__main__":
     main()
