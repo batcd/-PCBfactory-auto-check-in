@@ -1299,7 +1299,7 @@ def push_batch_summary(batch_results, start_index=1):
     in_summary = False
 
     # 复用原有推送逻辑
-    title = "嘉立创签到小结"
+    # title = "嘉立创签到小结"
     text = "\n".join(summary_logs)
     full_text = f"{title}\n{text}"
 
